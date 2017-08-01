@@ -1,4 +1,4 @@
-# tickets
+# Expires
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -7,27 +7,9 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
-PSRs you support to avoid any confusion with users and contributors.
-
+A package to add expiration date to database records.
 
 ## Install
-
-### Via BitBucket
-
-Add to composer.json:
-
-``` json
-"repositories": [ { "type": "git", "url": "git@git001.create.nl:packages/Expires.git" } ],
-```
-
-
-Add to composer.json require array
-``` json
- "createnl/expires": "master@dev"
-```
-
 
 ### Via Composer
 
@@ -37,7 +19,14 @@ $ composer require createnl/expires
 
 ## Usage
 
-### Starting an order / getting existing order
+### Your migration
+``` php
+
+$table->dateTime('expires_at')->nullable()->default(null);
+
+```
+
+### Your model
 
 ``` php
 
@@ -69,6 +58,48 @@ class Model extends Eloquent
 }
 ```
 
+### Methods
+
+``` php
+
+// Get records with expired
+$model->withExpired();
+ 
+// Get only expired records
+$model->onlyExpired();
+ 
+// Remove expiration date
+$model->unExpire();
+ 
+// Extend expiration
+$model->extendExpiration();
+ 
+// Disable automatic setting of expiration date
+Model::disableExpiring();
+ 
+// Enable automatic setting of expiration date
+Model::enableExpiring();
+
+```
+
+### Custom expiration date logic
+
+``` php
+
+/**
+ * @override
+ * Get Carbon object of parsed expiration date.
+ *
+ * @return Carbon
+ */
+public function expirationDate() : Carbon
+{
+    // @todo: Manipulate expiration date
+    $interval = new \DateInterval(self::$autoExpireDate);
+    return $this->freshTimestamp()->add($interval);
+}
+
+```
 
 ## Change log
 

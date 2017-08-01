@@ -21,7 +21,7 @@ class ExpiresScope implements Scope
      *
      * @var array
      */
-    protected $extensions = ['WithExpired', 'WithoutExpired', 'OnlyExpired'];
+    protected $extensions = ['WithExpired', 'OnlyExpired'];
 
     /**
      * Apply the scope to a given Eloquent query builder.
@@ -73,25 +73,6 @@ class ExpiresScope implements Scope
     {
         $builder->macro('withExpired', function (Builder $builder) {
             return $builder->withoutGlobalScope($this);
-        });
-    }
-
-    /**
-     * Add the without-expired extension to the builder.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @return void
-     */
-    protected function addWithoutExpired(Builder $builder) : void
-    {
-        $builder->macro('withoutExpired', function (Builder $builder) {
-            $model = $builder->getModel();
-
-            $builder->withoutGlobalScope($this)->whereNull(
-                $model->getQualifiedExpiresAtColumn()
-            );
-
-            return $builder;
         });
     }
 
