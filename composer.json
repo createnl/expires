@@ -1,5 +1,5 @@
 {
-    "name": "Createnl/Expires",
+    "name": "createnl/expires",
     "type": "library",
     "description": "Set expiration date for database records, like future deleted at columns",
     "minimum-stability" : "dev",

@@ -64,19 +64,6 @@ class ExpiresScope implements Scope
     }
 
     /**
-     * Add the with-expired extension to the builder.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @return void
-     */
-    protected function addWithExpired(Builder $builder) : void
-    {
-        $builder->macro('withExpired', function (Builder $builder) {
-            return $builder->withoutGlobalScope($this);
-        });
-    }
-
-    /**
      * Add the only-expired extension to the builder.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
