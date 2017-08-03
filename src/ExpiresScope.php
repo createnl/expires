@@ -14,8 +14,6 @@ use Illuminate\Database\Eloquent\Scope;
 
 class ExpiresScope implements Scope
 {
-
-
     /**
      * All of the extensions to be added to the builder.
      *
@@ -32,7 +30,9 @@ class ExpiresScope implements Scope
      */
     public function apply(Builder $builder, Model $model) : void
     {
-        $builder->where($model->getQualifiedExpiresAtColumn(), '>', $model->freshTimestamp())->orWhereNull($model->getQualifiedExpiresAtColumn());
+        $builder->where(
+            $model->getQualifiedExpiresAtColumn(), '>', $model->freshTimestamp()
+        )->orWhereNull($model->getQualifiedExpiresAtColumn());
     }
 
     /**
@@ -64,6 +64,19 @@ class ExpiresScope implements Scope
     }
 
     /**
+     * Add the with-expired extension to the builder.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $builder
+     * @return void
+     */
+    protected function addWithExpired(Builder $builder) : void
+    {
+        $builder->macro('withExpired', function (Builder $builder) {
+            return $builder->withoutGlobalScope($this);
+        });
+    }
+
+    /**
      * Add the only-expired extension to the builder.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
@@ -74,8 +87,8 @@ class ExpiresScope implements Scope
         $builder->macro('onlyExpired', function (Builder $builder) {
             $model = $builder->getModel();
 
-            $builder->withoutGlobalScope($this)->whereNotNull(
-                $model->getQualifiedExpiresAtColumn()
+            $builder->withoutGlobalScope($this)->where(
+                $model->getQualifiedExpiresAtColumn(), '<=', $model->freshTimestamp()
             );
 
             return $builder;

@@ -63,22 +63,31 @@ class Model extends Eloquent
 ``` php
 
 // Get records with expired
-$model->withExpired();
+$model->withExpired() : Builder;
  
 // Get only expired records
-$model->onlyExpired();
+$model->onlyExpired() : Builder;
+ 
+// Update expiration date
+$model->setExpiration(Carbon $date) : Model;
  
 // Remove expiration date
-$model->unExpire();
+$model->unExpire() : Model;
  
-// Extend expiration
-$model->extendExpiration();
+// Check if record is expired
+$model->isExpired() : bool;
+ 
+// Get carbon object of expiration date
+$model->expiresAt() :? Carbon;
+ 
+// Extend expiration by defined interval
+$model->extendExpiration() : Model;
  
 // Disable automatic setting of expiration date
-Model::disableExpiring();
+Model::disableExpiring() : void;
  
 // Enable automatic setting of expiration date
-Model::enableExpiring();
+Model::enableExpiring() : void;
 
 ```
 
@@ -140,5 +149,5 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-scrutinizer]: https://scrutinizer-ci.com/g/createnl/expires/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/createnl/expires
 [link-downloads]: https://packagist.org/packages/createnl/expires
-[link-author]: https://github.com/:alexlisenkov
+[link-author]: https://github.com/alexlisenkov
 [link-contributors]: ../../contributors

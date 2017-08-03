@@ -93,7 +93,8 @@ trait Expireable
      */
     public function extendExpiration() : bool
     {
-        return $this->update([$this->getExpiresAtColumn() => $this->expirationDate()]);
+        $this->{$this->getExpiresAtColumn()} = $this->expirationDate();
+        return $this->save();
     }
 
     /**
@@ -101,13 +102,52 @@ trait Expireable
      *
      * @return bool
      */
-    public function unExpire() : bool
+    public function unExpire() : Model
     {
         self::disableExpiring();
         $this->{$this->getExpiresAtColumn()} = null;
-        $success = $this->save();
+        $this->save();
         self::enableExpiring();
-        return $success;
+        return $this;
+    }
+
+    /**
+     * Set expiration date.
+     *
+     * @param Carbon $date
+     * @return Model
+     */
+    public function setExpiration( Carbon $date ) : Model
+    {
+        self::disableExpiring();
+        $this->{$this->getExpiresAtColumn()} = $date;
+        $this->save();
+        self::enableExpiring();
+        return $this;
+    }
+
+    /**
+     * Get the expiration date
+     *
+     * @return Carbon|null
+     */
+    public function expiresAt() :? Carbon
+    {
+        return Carbon::parse($this->{$this->getExpiresAtColumn()});
+    }
+
+    /**
+     * Check if record is expired
+     *
+     * @return bool
+     */
+    public function isExpired() : bool
+    {
+        if (!$this->{$this->getExpiresAtColumn()}) {
+            return (false);
+        } else {
+            return (Carbon::now()->gte($this->expiresAt()));
+        }
     }
 
     /**
